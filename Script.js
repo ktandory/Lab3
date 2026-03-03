@@ -10,7 +10,7 @@ const map = new mapboxgl.Map({
 });
 
 /*--------------------------------------------------------------------
-MAP CONTROLS
+MAPBOX CONTROLS AS ELEMENTS -- Based on week 8 demo 2
 --------------------------------------------------------------------*/
 map.addControl(new mapboxgl.NavigationControl());
 map.addControl(new mapboxgl.FullscreenControl());
@@ -22,7 +22,7 @@ const geocoder = new MapboxGeocoder({
 document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
 /*--------------------------------------------------------------------
-ACCESS AND VISUALIZE DATA
+ACCESS AND VISUALIZE DATA -- Based on week 8 demo 2
 --------------------------------------------------------------------*/
 map.on('load', () => {
     map.addSource('Cultural_Hotspots', {
@@ -30,22 +30,22 @@ map.on('load', () => {
         data: 'points-of-interest - 4326.geojson'
     });
 
-    // Cultural hotspots with classified styling and zoom-based sizes
+    // Cultural hotspots with classified styling and zoom-based sizes -- based on week 6 demo
     map.addLayer({
         'id': 'Cultural_Hotspots_Points',
         'type': 'circle',
         'source': 'Cultural_Hotspots',
         'paint': {
             'circle-radius': [
-                'interpolate',
-                ['linear'],
+                'interpolate', // 'interpolate' operator defines linear relationship between zoom level and circle size
+                ['linear'], 
                 ['zoom'],
-                8, 1,
+                8, 1, // i.e. when zoom level is 8 or less, circle radius is 1px
                 12, 10,
                 16, 14
             ],
             'circle-color': [
-                'case',
+                'case', // 'case' expression checks if interest type is in Interests field in the GEOJSON file
                 ['in', 'Architecture', ['get', 'Interests']], '#0f6aa3',
                 ['in', 'Art', ['get', 'Interests']], '#6bb7e2',
                 ['in', 'History', ['get', 'Interests']], '#683b9b',
@@ -54,7 +54,7 @@ map.on('load', () => {
                 ['in', 'Mural', ['get', 'Interests']], '#288c1b',
                 ['in', 'Culture', ['get', 'Interests']], '#e3e356',
                 ['in', 'Infrastructure', ['get', 'Interests']], '#c15e0d',
-                '#999999' // default if none found
+                '#999999' // Default if no interests found
             ],
             'circle-opacity': 0.85,
             'circle-stroke-color': '#ffffff',
@@ -115,7 +115,7 @@ legenditems.forEach(({ label, colour }) => {
 });
 
 /*--------------------------------------------------------------------
-ADD INTERACTIVITY BASED ON HTML EVENT
+ADD INTERACTIVITY BASED ON HTML EVENT -- Based on week 8 demo 2
 --------------------------------------------------------------------*/
 //Event Listener added to return map view to fullscreen on button click using flyTo method
 document.getElementById('returnbutton').addEventListener('click', () => {
