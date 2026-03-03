@@ -46,14 +46,14 @@ map.on('load', () => {
             ],
             'circle-color': [
                 'case',
-                ['in', 'Architecture', ['get', 'interests']], '#0f6aa3',
-                ['in', 'Art', ['get', 'interests']], '#6bb7e2',
-                ['in', 'History', ['get', 'interests']], '#683b9b',
-                ['in', 'Nature', ['get', 'interests']], '#dc88c5',
-                ['in', 'Community', ['get', 'interests']], '#be0d22',
-                ['in', 'Mural', ['get', 'interests']], '#288c1b',
-                ['in', 'Culture', ['get', 'interests']], '#e3e356',
-                ['in', 'Infrastructure', ['get', 'interests']], '#c15e0d',
+                ['in', 'Architecture', ['get', 'Interests']], '#0f6aa3',
+                ['in', 'Art', ['get', 'Interests']], '#6bb7e2',
+                ['in', 'History', ['get', 'Interests']], '#683b9b',
+                ['in', 'Nature', ['get', 'Interests']], '#dc88c5',
+                ['in', 'Community', ['get', 'Interests']], '#be0d22',
+                ['in', 'Mural', ['get', 'Interests']], '#288c1b',
+                ['in', 'Culture', ['get', 'Interests']], '#e3e356',
+                ['in', 'Infrastructure', ['get', 'Interests']], '#c15e0d',
                 '#999999' // default if none found
             ],
             'circle-opacity': 0.85,
@@ -84,7 +84,7 @@ map.on('load', () => {
 });
 
 /*--------------------------------------------------------------------
-CREATE LEGEND
+CREATE LEGEND -- Based on week 8 demo 2
 --------------------------------------------------------------------*/
 // Array variables defined for labels and colors
 const legenditems = [
@@ -117,3 +117,54 @@ legenditems.forEach(({ label, colour }) => {
 /*--------------------------------------------------------------------
 ADD INTERACTIVITY BASED ON HTML EVENT
 --------------------------------------------------------------------*/
+//Event Listener added to return map view to fullscreen on button click using flyTo method
+document.getElementById('returnbutton').addEventListener('click', () => {
+    map.flyTo({
+        center: [-79.338, 43.713],
+        zoom: 11,
+        essential: true
+    });
+});
+
+//Change legend display (show/hide) based on checkbox
+let legendcheck = document.getElementById('legendcheck');
+
+legendcheck.addEventListener('click', () => {
+    if (legendcheck.checked) {
+        legendcheck.checked = true;
+        legend.style.display = 'block';
+    }
+    else {
+        legend.style.display = "none";
+        legendcheck.checked = false;
+    }
+});
+
+//Change map layer display based on checkbox using setLayoutProperty method
+document.getElementById('layercheck').addEventListener('change', (e) => {
+    map.setLayoutProperty(
+        'Cultural_Hotspots_Points',
+        'visibility',
+        e.target.checked ? 'visible' : 'none'
+    );
+});
+
+//Filter 'Interest' data layer to show selected Interest from dropdown selection
+let interestvalue;
+
+document.getElementById("interestfieldset").addEventListener('change', (e) => {   
+    interestvalue = document.getElementById('interest').value;
+
+    //console.log(boundaryvalue); // Useful for testing whether correct values are returned from dropdown selection
+
+    if (interestvalue == 'All') {
+        map.setFilter(
+            'Cultural_Hotspots_Points', ['has', 'Interests'] // Returns all points from layer that have a value in interest field
+        );
+    } else {
+        map.setFilter(
+            'Cultural_Hotspots_Points',
+            ['in', interestvalue, ['get', 'Interests']] // returns points that contain the selected interest value
+        );
+    }
+});
